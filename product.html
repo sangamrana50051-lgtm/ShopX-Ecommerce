@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - ShopX</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ShopX</a>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="search" placeholder="Search for products..." oninput="searchRedirect(this.value)">
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All</a>
+      <a class="nav-link" href="index.html">Men</a>
+      <a class="nav-link" href="index.html">Women</a>
+      <a class="nav-link" href="index.html">Kids</a>
+    </div>
+    <div class="nav-icons">
+      <a class="nav-icon-btn" href="wishlist.html">🤍<span class="badge wishlist-badge" style="display:none">0</span></a>
+      <a class="nav-icon-btn" href="cart.html">🛒<span class="badge cart-badge" style="display:none">0</span></a>
+      <a class="nav-icon-btn nav-login-btn" href="login.html">👤 Login</a>
+      <button class="nav-icon-btn nav-user-btn" onclick="logout()" style="display:none">👤 Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-layout">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span>/</span>
+    <a href="index.html" id="breadcrumbCat">Category</a>
+    <span>/</span>
+    <span id="breadcrumbName">Product</span>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="detail-layout" id="productDetail">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- RELATED PRODUCTS -->
+  <div class="related-section" id="relatedSection">
+    <h2>More in <span id="relatedCatLabel"></span></h2>
+    <div class="product-grid" id="relatedGrid"></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">ShopX</a>
+        <p>Your go-to destination for fashion-forward clothing and accessories.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cart.html">Cart</a></li>
+          <li><a href="wishlist.html">Wishlist</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Customer Care</a></li>
+          <li><a href="#">Return Policy</a></li>
+          <li><a href="#">Size Guide</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 ShopX. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  function searchRedirect(val) {
+    if (val.trim()) window.location.href = `index.html?search=${encodeURIComponent(val)}`;
+  }
+
+  let selectedSize = 'M';
+  let qty = 1;
+  let product = null;
+
+  function selectSize(size) {
+    selectedSize = size;
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.classList.toggle('selected', btn.textContent === size);
+    });
+  }
+
+  function changeQty(delta) {
+    qty = Math.max(1, Math.min(10, qty + delta));
+    document.getElementById('qtyNum').textContent = qty;
+  }
+
+  function doAddToCart() {
+    if (!product) return;
+    addToCart(product.id, selectedSize, qty);
+    showToast(`Added ${qty}x ${product.name} to cart!`, 'success');
+    updateCartBadge();
+  }
+
+  function doWishlist() {
+    if (!product) return;
+    const isNow = toggleWishlist(product.id);
+    const btn = document.getElementById('wishlistToggle');
+    btn.classList.toggle('active', isNow);
+    btn.title = isNow ? 'Remove from wishlist' : 'Add to wishlist';
+    btn.textContent = isNow ? '❤️' : '🤍';
+  }
+
+  function renderProduct(p) {
+    product = p;
+    const discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+    const wishlisted = isInWishlist(p.id);
+
+    document.title = `${p.name} - ShopX`;
+    document.getElementById('breadcrumbCat').textContent = p.category;
+    document.getElementById('breadcrumbName').textContent = p.name;
+    document.getElementById('relatedCatLabel').textContent = p.category;
+
+    const sizeButtons = p.sizes.map(s =>
+      `<button class="size-btn ${s === 'M' ? 'selected' : ''}" onclick="selectSize('${s}')">${s}</button>`
+    ).join('');
+
+    document.getElementById('productDetail').innerHTML = `
+      <img class="detail-img" src="${p.image}" alt="${p.name}">
+      <div class="detail-info">
+        <p class="detail-cat">${p.category}</p>
+        <h1 class="detail-name">${p.name}</h1>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <span class="rating-badge">⭐ ${p.rating}</span>
+          <span class="rating-count">${p.reviews.toLocaleString()} ratings</span>
+        </div>
+        <div class="detail-price-row">
+          <span class="detail-price">₹${p.price.toLocaleString()}</span>
+          <span class="detail-old-price">₹${p.originalPrice.toLocaleString()}</span>
+          <span class="detail-off">${discount}% off</span>
+        </div>
+        <p class="detail-description">${p.description}</p>
+        <div>
+          <p class="size-label">Size <span style="font-weight:400;color:#888;font-size:12px">| Size Guide</span></p>
+          <div class="size-options">${sizeButtons}</div>
+        </div>
+        <div>
+          <p class="qty-label">Quantity</p>
+          <div class="detail-qty">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <span id="qtyNum" class="qty-num">1</span>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-primary" onclick="doAddToCart()">🛒 Add to Cart</button>
+          <button class="btn-primary" style="background:#f97316" onclick="doAddToCart();setTimeout(()=>window.location.href='checkout.html',400)">⚡ Buy Now</button>
+          <button class="wishlist-toggle ${wishlisted ? 'active' : ''}" id="wishlistToggle" onclick="doWishlist()" title="${wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}">
+            ${wishlisted ? '❤️' : '🤍'}
+          </button>
+        </div>
+        <div class="assurance-row">
+          <div class="assurance-item"><p>🚚</p><span>Free Delivery</span></div>
+          <div class="assurance-item"><p>🔄</p><span>30-Day Returns</span></div>
+          <div class="assurance-item"><p>✅</p><span>100% Genuine</span></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRelated(p) {
+    const related = products.filter(r => r.id !== p.id && r.category === p.category).slice(0, 4);
+    document.getElementById('relatedGrid').innerHTML = related.map(r => productCardHTML(r)).join('');
+  }
+
+  function notFound() {
+    document.getElementById('productDetail').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;padding:80px">
+        <div class="empty-icon">😕</div>
+        <h2>Product Not Found</h2>
+        <p>This product doesn't exist</p>
+        <a href="index.html" class="btn-primary" style="margin-top:16px;display:inline-flex">Go to Home</a>
+      </div>
+    `;
+    document.getElementById('relatedSection').style.display = 'none';
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const pid = params.get('id');
+  const found = products.find(p => p.id === pid);
+  if (found) {
+    renderProduct(found);
+    renderRelated(found);
+  } else {
+    notFound();
+  }
+</script>
+</body>
+</html>

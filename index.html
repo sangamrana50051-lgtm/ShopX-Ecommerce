@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopX - Fashion for Everyone</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ShopX</a>
+
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="search" id="searchInput" placeholder="Search for products, brands and more" oninput="filterProducts()">
+    </div>
+
+    <div class="nav-links">
+      <button class="nav-link active" id="btn-all" onclick="setCategory('All')">All</button>
+      <button class="nav-link" id="btn-Men" onclick="setCategory('Men')">Men</button>
+      <button class="nav-link" id="btn-Women" onclick="setCategory('Women')">Women</button>
+      <button class="nav-link" id="btn-Kids" onclick="setCategory('Kids')">Kids</button>
+    </div>
+
+    <div class="nav-icons">
+      <a class="nav-icon-btn" href="wishlist.html" title="Wishlist">
+        🤍
+        <span class="badge wishlist-badge" style="display:none">0</span>
+      </a>
+      <a class="nav-icon-btn" href="cart.html" title="Cart">
+        🛒
+        <span class="badge cart-badge" style="display:none">0</span>
+      </a>
+      <a class="nav-icon-btn nav-login-btn" href="login.html" title="Login">👤 Login</a>
+      <button class="nav-icon-btn nav-user-btn" onclick="logout()" style="display:none" title="Logout">👤 Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<section class="hero" id="heroSection">
+  <div class="hero-inner">
+    <span class="hero-tag" id="heroTag">Limited Time Deal</span>
+    <h1 id="heroTitle">Style That Speaks</h1>
+    <p id="heroSubtitle">Up to 60% OFF on Top Brands</p>
+    <button class="hero-btn" onclick="setCategory('All')">Shop Now &rarr;</button>
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features">
+  <div class="features-inner">
+    <div class="feature-item">
+      <div class="feature-icon">🚚</div>
+      <div>
+        <p>Free Delivery</p>
+        <span>On orders above ₹499</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔄</div>
+      <div>
+        <p>Easy Returns</p>
+        <span>30-day hassle-free returns</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔒</div>
+      <div>
+        <p>Secure Payment</p>
+        <span>100% protected transactions</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">⚡</div>
+      <div>
+        <p>Fast Shipping</p>
+        <span>Delivered in 2-5 days</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<div class="section">
+  <div class="section-header">
+    <h2 class="section-title" id="sectionTitle">All Products <span id="productCount">(12 items)</span></h2>
+    <div class="filter-btns">
+      <button class="filter-btn active" id="filter-all" onclick="setCategory('All')">All</button>
+      <button class="filter-btn" id="filter-men" onclick="setCategory('Men')">Men</button>
+      <button class="filter-btn" id="filter-women" onclick="setCategory('Women')">Women</button>
+      <button class="filter-btn" id="filter-kids" onclick="setCategory('Kids')">Kids</button>
+    </div>
+  </div>
+
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- Empty state -->
+  <div class="empty-state hidden" id="emptyState">
+    <div class="empty-icon">🔍</div>
+    <h2>No products found</h2>
+    <p>Try a different keyword or category</p>
+    <button class="btn-primary" onclick="setCategory('All')">View All Products</button>
+  </div>
+</div>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner" id="promoBanner">
+  <div class="promo-inner">
+    <h2>Flat 50% OFF</h2>
+    <p>On selected styles this week only</p>
+    <button class="promo-btn" onclick="setCategory('Women')">Shop Women's Sale &rarr;</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">ShopX</a>
+        <p>Your go-to destination for fashion-forward clothing and accessories for Men, Women, and Kids.</p>
+        <div class="social-links">
+          <span class="social-link" title="Instagram">📸</span>
+          <span class="social-link" title="Twitter">🐦</span>
+          <span class="social-link" title="Facebook">📘</span>
+          <span class="social-link" title="YouTube">▶️</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="index.html" onclick="setCategory('Men')">Men</a></li>
+          <li><a href="index.html" onclick="setCategory('Women')">Women</a></li>
+          <li><a href="index.html" onclick="setCategory('Kids')">Kids</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Trending</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Customer Care</a></li>
+          <li><a href="#">Return Policy</a></li>
+          <li><a href="#">Shipping Info</a></li>
+          <li><a href="#">Size Guide</a></li>
+          <li><a href="#">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 ShopX. All rights reserved.</span>
+      <div style="display:flex;gap:20px">
+        <a href="#" style="color:#666">Terms</a>
+        <a href="#" style="color:#666">Privacy</a>
+        <a href="#" style="color:#666">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  let activeCategory = 'All';
+
+  const heroBanners = [
+    { tag: 'Limited Time Deal', title: 'Style That Speaks', subtitle: 'Up to 60% OFF on Top Brands', gradient: 'linear-gradient(135deg,#ff3f6c,#ff6b35)' },
+    { tag: 'New Collection', title: 'New Season, New Look', subtitle: 'Fresh arrivals for Men, Women & Kids', gradient: 'linear-gradient(135deg,#7c3aed,#4f46e5)' },
+    { tag: 'Kids Special', title: 'Kids Fashion Fest', subtitle: 'Adorable styles starting ₹299', gradient: 'linear-gradient(135deg,#f59e0b,#ef4444)' }
+  ];
+  let bannerIdx = 0;
+
+  function rotateBanner() {
+    bannerIdx = (bannerIdx + 1) % heroBanners.length;
+    const b = heroBanners[bannerIdx];
+    document.getElementById('heroTag').textContent = b.tag;
+    document.getElementById('heroTitle').textContent = b.title;
+    document.getElementById('heroSubtitle').textContent = b.subtitle;
+    document.getElementById('heroSection').style.background = b.gradient;
+  }
+  setInterval(rotateBanner, 4000);
+
+  function setCategory(cat) {
+    activeCategory = cat;
+    document.getElementById('searchInput').value = '';
+    // Update nav links
+    ['All','Men','Women','Kids'].forEach(c => {
+      const btn = document.getElementById(`btn-${c === 'All' ? 'all' : c}`);
+      if (btn) btn.className = 'nav-link' + (c === cat ? ' active' : '');
+      const fb = document.getElementById(`filter-${c.toLowerCase()}`);
+      if (fb) fb.className = 'filter-btn' + (c === cat ? ' active' : '');
+    });
+    renderProducts();
+  }
+
+  function filterProducts() {
+    renderProducts();
+  }
+
+  function renderProducts() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    let filtered = products;
+    if (activeCategory !== 'All') {
+      filtered = filtered.filter(p => p.category === activeCategory);
+    }
+    if (query) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query)
+      );
+      document.getElementById('heroSection').style.display = 'none';
+      document.getElementById('promoBanner').style.display = 'none';
+    } else {
+      document.getElementById('heroSection').style.display = '';
+      document.getElementById('promoBanner').style.display = activeCategory === 'All' ? '' : 'none';
+    }
+
+    const grid = document.getElementById('productGrid');
+    const empty = document.getElementById('emptyState');
+    const title = document.getElementById('sectionTitle');
+    const count = document.getElementById('productCount');
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.classList.remove('hidden');
+      title.childNodes[0].textContent = `No results for "${query}" `;
+      count.textContent = '(0 items)';
+    } else {
+      empty.classList.add('hidden');
+      grid.innerHTML = filtered.map(p => productCardHTML(p)).join('');
+      if (query) {
+        title.childNodes[0].textContent = `Results for "${query}" `;
+      } else {
+        title.childNodes[0].textContent = activeCategory === 'All' ? 'All Products ' : `${activeCategory}'s Collection `;
+      }
+      count.textContent = `(${filtered.length} items)`;
+    }
+  }
+
+  renderProducts();
+</script>
+</body>
+</html>

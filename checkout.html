@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - ShopX</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ShopX</a>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:20px;font-size:13px;color:#888">
+      <span style="display:flex;align-items:center;gap:6px">🔒 <strong>Secure Checkout</strong></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ORDER SUCCESS SCREEN (hidden by default) -->
+<div class="success-screen" id="successScreen">
+  <div>
+    <div class="success-icon">🎉</div>
+    <h1>Order Placed!</h1>
+    <p>Thank you for shopping with ShopX</p>
+    <p>Your order has been confirmed.</p>
+    <div class="success-badge" id="orderIdBadge">Order #SX001234</div>
+    <p style="margin-top:20px;font-size:13px;color:#888">Estimated delivery in 2–5 business days</p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:28px">
+      <a href="index.html" class="btn-primary">Continue Shopping</a>
+      <a href="index.html" class="btn-outline">Track Order</a>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT CONTENT -->
+<div class="page-layout" id="checkoutContent">
+  <h1 class="page-title">Checkout</h1>
+
+  <!-- Empty cart redirect -->
+  <div id="emptyCartMsg" class="empty-state hidden">
+    <div class="empty-icon">🛒</div>
+    <h2>Your cart is empty</h2>
+    <p>Add items to your cart before checking out</p>
+    <a href="index.html" class="btn-primary" style="margin-top:8px">Shop Now</a>
+  </div>
+
+  <div class="checkout-layout" id="checkoutLayout">
+    <!-- LEFT -->
+    <div>
+      <!-- DELIVERY ADDRESS -->
+      <div class="checkout-card">
+        <h2>📍 Delivery Address</h2>
+        <div class="form-grid">
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">First Name</label>
+            <input type="text" id="firstName" placeholder="John" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Last Name</label>
+            <input type="text" id="lastName" placeholder="Doe" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+          <div class="full-width">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Street Address</label>
+            <input type="text" id="address" placeholder="123 Main Street, Apartment 4B" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">City</label>
+            <input type="text" id="city" placeholder="Mumbai" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">PIN Code</label>
+            <input type="text" id="pincode" placeholder="400001" maxlength="6" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">State</label>
+            <select id="state" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none;background:white">
+              <option value="">Select State</option>
+              <option>Maharashtra</option>
+              <option>Delhi</option>
+              <option>Karnataka</option>
+              <option>Tamil Nadu</option>
+              <option>West Bengal</option>
+              <option>Gujarat</option>
+              <option>Rajasthan</option>
+              <option>Uttar Pradesh</option>
+              <option>Punjab</option>
+              <option>Telangana</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px">Phone Number</label>
+            <input type="tel" id="phone" placeholder="9876543210" maxlength="10" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+        </div>
+        <div id="addressError" style="display:none;color:#ef4444;font-size:13px;margin-top:10px">⚠️ Please fill all address fields</div>
+      </div>
+
+      <!-- PAYMENT METHOD -->
+      <div class="checkout-card">
+        <h2>💳 Payment Method</h2>
+        <div class="payment-options">
+          <div class="payment-option selected" id="pay_upi" onclick="selectPayment('upi')">
+            <div class="payment-icon">📱</div>
+            <div class="payment-text">
+              <strong>UPI</strong>
+              <span>Google Pay, PhonePe, Paytm</span>
+            </div>
+            <div class="radio-dot"><div class="radio-inner"></div></div>
+          </div>
+          <div class="payment-option" id="pay_card" onclick="selectPayment('card')">
+            <div class="payment-icon">💳</div>
+            <div class="payment-text">
+              <strong>Credit / Debit Card</strong>
+              <span>Visa, Mastercard, RuPay</span>
+            </div>
+            <div class="radio-dot"><div class="radio-inner"></div></div>
+          </div>
+          <div class="payment-option" id="pay_netbanking" onclick="selectPayment('netbanking')">
+            <div class="payment-icon">🏦</div>
+            <div class="payment-text">
+              <strong>Net Banking</strong>
+              <span>All major banks supported</span>
+            </div>
+            <div class="radio-dot"><div class="radio-inner"></div></div>
+          </div>
+          <div class="payment-option" id="pay_cod" onclick="selectPayment('cod')">
+            <div class="payment-icon">💵</div>
+            <div class="payment-text">
+              <strong>Cash on Delivery</strong>
+              <span>Pay when your order arrives</span>
+            </div>
+            <div class="radio-dot"><div class="radio-inner"></div></div>
+          </div>
+        </div>
+
+        <!-- UPI EXTRA -->
+        <div id="upiExtra" style="margin-top:16px">
+          <input type="text" placeholder="Enter UPI ID (e.g. 9876543210@upi)" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+        </div>
+        <!-- CARD EXTRA -->
+        <div id="cardExtra" style="margin-top:16px;display:none;display:grid;gap:12px">
+          <input type="text" placeholder="Card Number (16 digits)" maxlength="19" style="width:100%;padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <input type="text" placeholder="MM / YY" maxlength="5" style="padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+            <input type="text" placeholder="CVV" maxlength="3" style="padding:12px 16px;border:1.5px solid #eee;border-radius:10px;font-family:Poppins,sans-serif;font-size:14px;outline:none">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div>
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div id="summaryItems"></div>
+        <hr style="border:none;border-top:1px solid #eee;margin:12px 0">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="summarySubtotal">₹0</span>
+        </div>
+        <div class="summary-row discount">
+          <span>Discount</span>
+          <span id="summaryDiscount">−₹0</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <span id="summaryDelivery">FREE</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="summaryTotal">₹0</span>
+        </div>
+        <div class="savings-note" id="savingsNote" style="display:none"></div>
+        <button class="btn-primary" style="width:100%;justify-content:center;padding:16px;margin-top:16px;font-size:15px" onclick="placeOrder()">
+          🔒 Place Order
+        </button>
+        <p style="font-size:11px;color:#aaa;text-align:center;margin-top:10px">
+          Your data is 100% secure and encrypted
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span>&copy; 2026 ShopX. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  let selectedPayment = 'upi';
+
+  function selectPayment(type) {
+    selectedPayment = type;
+    ['upi','card','netbanking','cod'].forEach(t => {
+      document.getElementById(`pay_${t}`).classList.toggle('selected', t === type);
+    });
+    document.getElementById('upiExtra').style.display = type === 'upi' ? '' : 'none';
+    document.getElementById('cardExtra').style.display = type === 'card' ? 'grid' : 'none';
+  }
+  // Hide card extra initially
+  document.getElementById('cardExtra').style.display = 'none';
+
+  function renderSummary() {
+    const cart = getCart();
+    if (cart.length === 0) {
+      document.getElementById('checkoutLayout').classList.add('hidden');
+      document.getElementById('emptyCartMsg').classList.remove('hidden');
+      return;
+    }
+
+    const subtotal = cart.reduce((s, item) => {
+      const p = products.find(pr => pr.id === item.id);
+      return s + (p ? p.originalPrice * item.qty : 0);
+    }, 0);
+    const total = getCartTotal();
+    const discount = subtotal - total;
+    const delivery = total >= 499 ? 0 : 49;
+    const grand = total + delivery;
+    const save = discount + (delivery === 0 ? 49 : 0);
+
+    const itemsHTML = cart.map(item => {
+      const p = products.find(pr => pr.id === item.id);
+      if (!p) return '';
+      return `<div class="summary-row">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px" title="${p.name}">${p.name} ×${item.qty}</span>
+        <span>₹${(p.price * item.qty).toLocaleString()}</span>
+      </div>`;
+    }).join('');
+
+    document.getElementById('summaryItems').innerHTML = itemsHTML;
+    document.getElementById('summarySubtotal').textContent = `₹${subtotal.toLocaleString()}`;
+    document.getElementById('summaryDiscount').textContent = `−₹${discount.toLocaleString()}`;
+    document.getElementById('summaryDelivery').textContent = delivery === 0 ? 'FREE' : `₹${delivery}`;
+    document.getElementById('summaryTotal').textContent = `₹${grand.toLocaleString()}`;
+
+    if (save > 0) {
+      document.getElementById('savingsNote').style.display = '';
+      document.getElementById('savingsNote').textContent = `🎉 You save ₹${save.toLocaleString()} on this order`;
+    }
+  }
+
+  function validateAddress() {
+    const fields = ['firstName','lastName','address','city','pincode','state','phone'];
+    return fields.every(id => {
+      const el = document.getElementById(id);
+      return el && el.value.trim() !== '';
+    });
+  }
+
+  function placeOrder() {
+    if (!validateAddress()) {
+      document.getElementById('addressError').style.display = 'block';
+      document.getElementById('addressError').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    document.getElementById('addressError').style.display = 'none';
+
+    // Simulate placing order
+    const orderId = 'SX' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('orderIdBadge').textContent = `Order #${orderId}`;
+
+    // Clear cart
+    saveCart([]);
+    updateCartBadge();
+
+    // Show success
+    document.getElementById('checkoutContent').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }
+
+  renderSummary();
+</script>
+</body>
+</html>

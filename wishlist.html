@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist - ShopX</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">ShopX</a>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="search" placeholder="Search for products..." onkeydown="if(event.key==='Enter' && this.value) window.location.href='index.html?search='+encodeURIComponent(this.value)">
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">All</a>
+      <a class="nav-link" href="index.html">Men</a>
+      <a class="nav-link" href="index.html">Women</a>
+      <a class="nav-link" href="index.html">Kids</a>
+    </div>
+    <div class="nav-icons">
+      <a class="nav-icon-btn active" href="wishlist.html">❤️<span class="badge wishlist-badge" style="display:none">0</span></a>
+      <a class="nav-icon-btn" href="cart.html">🛒<span class="badge cart-badge" style="display:none">0</span></a>
+      <a class="nav-icon-btn nav-login-btn" href="login.html">👤 Login</a>
+      <button class="nav-icon-btn nav-user-btn" onclick="logout()" style="display:none">👤 Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- WISHLIST PAGE -->
+<div class="page-layout">
+  <h1 class="page-title">My Wishlist <span id="wishlistCountTitle" style="font-size:16px;font-weight:400;color:#888"></span></h1>
+
+  <!-- Products -->
+  <div class="product-grid" id="wishlistGrid"></div>
+
+  <!-- Empty -->
+  <div class="empty-state hidden" id="wishlistEmpty">
+    <div class="empty-icon">🤍</div>
+    <h2>Your wishlist is empty</h2>
+    <p>Save items you love for later by clicking the heart icon</p>
+    <a href="index.html" class="btn-primary" style="margin-top:8px">Discover Products</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">ShopX</a>
+        <p>Your go-to destination for fashion-forward clothing and accessories.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="cart.html">Cart</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Customer Care</a></li>
+          <li><a href="#">Return Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 ShopX. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  function renderWishlist() {
+    const wishlist = getWishlist();
+    const count = wishlist.length;
+
+    document.getElementById('wishlistCountTitle').textContent = count ? `(${count} items)` : '';
+
+    if (count === 0) {
+      document.getElementById('wishlistGrid').innerHTML = '';
+      document.getElementById('wishlistEmpty').classList.remove('hidden');
+      return;
+    }
+
+    document.getElementById('wishlistEmpty').classList.add('hidden');
+    const wishedProducts = products.filter(p => wishlist.includes(p.id));
+
+    document.getElementById('wishlistGrid').innerHTML = wishedProducts.map(p => {
+      const discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+      const badgeHtml = p.badge
+        ? `<span class="product-badge ${p.badgeClass}">${p.badge}</span>`
+        : `<span class="product-badge badge-green">${discount}% OFF</span>`;
+
+      return `
+        <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+          <div class="product-img-wrap">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            ${badgeHtml}
+            <button class="wishlist-btn wishlisted" onclick="removeFromWishlist(event,'${p.id}')" title="Remove from wishlist">❤️</button>
+            <div class="product-overlay">
+              <button class="add-cart-btn" onclick="handleAddCart(event,'${p.id}')">🛒 Add to Cart</button>
+            </div>
+          </div>
+          <div class="product-info">
+            <p class="product-cat">${p.category}</p>
+            <h3 class="product-name">${p.name}</h3>
+            <div class="rating-row">
+              <span class="rating-badge">⭐ ${p.rating}</span>
+              <span class="rating-count">(${p.reviews.toLocaleString()})</span>
+            </div>
+            <div class="price-row">
+              <span class="price-now">₹${p.price.toLocaleString()}</span>
+              <span class="price-old">₹${p.originalPrice.toLocaleString()}</span>
+              <span class="price-off">${discount}% off</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function removeFromWishlist(e, productId) {
+    e.stopPropagation();
+    let list = getWishlist();
+    list = list.filter(id => id !== productId);
+    saveWishlist(list);
+    showToast('Removed from wishlist', 'info');
+    updateWishlistBadge();
+    renderWishlist();
+  }
+
+  renderWishlist();
+</script>
+</body>
+</html>
